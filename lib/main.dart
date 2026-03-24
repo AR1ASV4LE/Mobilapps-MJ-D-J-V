@@ -28,17 +28,26 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> screens = const [
     Center(
-        key: ValueKey(0),
-        child: Text("Inicio",
-            style: TextStyle(color: Colors.white, fontSize: 24))),
+      key: ValueKey(0),
+      child: Text(
+        "Inicio",
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    ),
     Center(
-        key: ValueKey(1),
-        child: Text("Buscar",
-            style: TextStyle(color: Colors.white, fontSize: 24))),
+      key: ValueKey(1),
+      child: Text(
+        "Buscar",
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    ),
     Center(
-        key: ValueKey(2),
-        child: Text("Perfil",
-            style: TextStyle(color: Colors.white, fontSize: 24))),
+      key: ValueKey(2),
+      child: Text(
+        "Perfil",
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    ),
   ];
 
   void onItemTapped(int index) {
@@ -92,10 +101,7 @@ class _HomePageState extends State<HomePage> {
               transitionBuilder: (child, animation) {
                 return FadeTransition(
                   opacity: animation,
-                  child: ScaleTransition(
-                    scale: animation,
-                    child: child,
-                  ),
+                  child: ScaleTransition(scale: animation, child: child),
                 );
               },
               child: screens[selectedIndex],
@@ -108,8 +114,7 @@ class _HomePageState extends State<HomePage> {
             left: 20,
             right: 20,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
                 // FIX: Replaced deprecated `withOpacity` with `withAlpha`
                 // `Colors.white` (0xFFFFFFFF) with 0.15 opacity means
