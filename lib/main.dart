@@ -7,116 +7,298 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _HomePageState extends State<HomePage> {
+  int selectedIndex = 0;
 
-  void _incrementCounter() {
+  // 🔵 SEMANA 1: pantallas separadas
+  final List<Widget> screens = const [
+    HomeScreen(),
+    SearchScreen(),
+    ProfileScreen(),
+  ];
+
+  void onItemTapped(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      selectedIndex = index;
     });
+  }
+
+  Widget buildNavItem(IconData icon, int index) {
+    final bool isSelected = selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () => onItemTapped(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(
+          icon,
+          color: isSelected ? Colors.black : Colors.white70,
+          size: isSelected ? 30 : 24, // 🔵 SEMANA 2 animación de tamaño
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: Stack(
+        children: [
+          // 🔵 SEMANA 0 (tu base)
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF6A4C93), Color(0xFF4A2F6B)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ],
+          ),
+
+          // 🔵 SEMANA 2: animación mejorada
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            transitionBuilder: (child, animation) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.3, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            child: screens[selectedIndex],
+          ),
+
+          // 🔻 MENÚ
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  buildNavItem(Icons.home_outlined, 0),
+                  buildNavItem(Icons.search, 1),
+                  buildNavItem(Icons.person_outline, 2),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =====================================================
+// 🔵 SEMANA 3: HOME CON CONTENIDO REAL
+// =====================================================
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      key: const ValueKey(0),
+      padding: const EdgeInsets.all(20),
+      children: [
+        const SizedBox(height: 40),
+        const Text(
+          "Inicio",
+          style: TextStyle(color: Colors.white, fontSize: 28),
         ),
+
+        const SizedBox(height: 20),
+
+        // Tarjetas
+        _card("Noticias", Icons.article),
+        _card("Eventos", Icons.event),
+        _card("Recomendados", Icons.star),
+      ],
+    );
+  }
+
+  Widget _card(String text, IconData icon) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white24,
+        borderRadius: BorderRadius.circular(20),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white),
+          const SizedBox(width: 10),
+          Text(text, style: const TextStyle(color: Colors.white)),
+        ],
       ),
+    );
+  }
+}
+
+// =====================================================
+// 🔵 SEMANA 3: SEARCH CON INPUT + LISTA
+// =====================================================
+
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  String query = "";
+
+  final List<String> items = [
+    "Flutter",
+    "Dart",
+    "API",
+    "Aplicaciones",
+    "Programación",
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = items
+        .where((e) => e.toLowerCase().contains(query))
+        .toList();
+
+    return Padding(
+      key: const ValueKey(1),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+
+          TextField(
+            onChanged: (value) {
+              setState(() {
+                query = value.toLowerCase();
+              });
+            },
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Buscar...",
+              hintStyle: const TextStyle(color: Colors.white70),
+              filled: true,
+              fillColor: Colors.white24,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Lista dinámica
+          Expanded(
+            child: ListView.builder(
+              itemCount: filtered.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    filtered[index],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =====================================================
+// 🔵 SEMANA 4: PERFIL CON INTERACCIÓN
+// =====================================================
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  int likes = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      key: const ValueKey(2),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const CircleAvatar(
+          radius: 40,
+          backgroundColor: Colors.white24,
+          child: Icon(Icons.person, size: 40, color: Colors.white),
+        ),
+        const SizedBox(height: 10),
+
+        const Text(
+          "Usuario",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+
+        const SizedBox(height: 20),
+
+        // 🔵 interacción
+        Text("Likes: $likes", style: const TextStyle(color: Colors.white)),
+
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              likes++;
+            });
+          },
+          child: const Text("Me gusta"),
+        ),
+
+        const SizedBox(height: 10),
+
+        ElevatedButton(
+          onPressed: () {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("Editando perfil...")));
+          },
+          child: const Text("Editar perfil"),
+        ),
+      ],
     );
   }
 }
