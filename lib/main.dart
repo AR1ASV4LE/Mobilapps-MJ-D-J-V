@@ -26,11 +26,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
 
+<<<<<<< HEAD
   // 🔵 SEMANA 1: pantallas separadas
   final List<Widget> screens = const [
     HomeScreen(),
     SearchScreen(),
     ProfileScreen(),
+=======
+  final List<Widget> screens = const [
+    Center(
+        key: ValueKey(0),
+        child: Text("Inicio",
+            style: TextStyle(color: Colors.white, fontSize: 24))),
+    Center(
+        key: ValueKey(1),
+        child: Text("Buscar",
+            style: TextStyle(color: Colors.white, fontSize: 24))),
+    Center(
+        key: ValueKey(2),
+        child: Text("Perfil",
+            style: TextStyle(color: Colors.white, fontSize: 24))),
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
   ];
 
   void onItemTapped(int index) {
@@ -46,6 +62,10 @@ class _HomePageState extends State<HomePage> {
       onTap: () => onItemTapped(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
+<<<<<<< HEAD
+=======
+        curve: Curves.easeInOut,
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
@@ -54,7 +74,11 @@ class _HomePageState extends State<HomePage> {
         child: Icon(
           icon,
           color: isSelected ? Colors.black : Colors.white70,
+<<<<<<< HEAD
           size: isSelected ? 30 : 24, // 🔵 SEMANA 2 animación de tamaño
+=======
+          size: 26,
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
         ),
       ),
     );
@@ -65,7 +89,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
+<<<<<<< HEAD
           // 🔵 SEMANA 0 (tu base)
+=======
+          // 🔹 FONDO (usa imagen si quieres)
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -76,6 +104,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
+<<<<<<< HEAD
           // 🔵 SEMANA 2: animación mejorada
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
@@ -92,12 +121,37 @@ class _HomePageState extends State<HomePage> {
           ),
 
           // 🔻 MENÚ
+=======
+          // 🔹 CONTENIDO CON ANIMACIÓN (ARREGLADO)
+          Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  ),
+                );
+              },
+              child: screens[selectedIndex],
+            ),
+          ),
+
+          // 🔻 MENÚ INFERIOR
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
           Positioned(
             bottom: 20,
             left: 20,
             right: 20,
             child: Container(
+<<<<<<< HEAD
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+=======
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+>>>>>>> 61e5729edebe302cf29d687c59cfc711e15287cc
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(30),
